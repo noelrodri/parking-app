@@ -1,0 +1,45 @@
+body {
+    background-color:  #e0e0e0;
+}
+
+h1 {
+    color: #333;
+}
+
+.list-group-item a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+
+
+.spot-btn {
+  width: 35px;
+  height: 35px;
+  font-weight: bold;
+  padding: 0;
+  line-height: 35px;
+  text-align: center;
+  border-radius: 50%;
+}
+
+
+.lot-card {
+    width: 18rem; 
+    max-height: 250px;
+    overflow: hidden;
+}
+
+
+.scrollable-spot-list {
+  max-height: 150px;  
+  overflow-y: auto;
+  border-top: 1px solid #ccc;
+  padding: 8px 0 30px 0; 
+}
+
+
+#usageChart {
+    min-height: 300px;
+    max-height: 400px;
+}

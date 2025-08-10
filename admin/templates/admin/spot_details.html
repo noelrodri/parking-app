@@ -1,0 +1,38 @@
+
+{% extends "base.html" %}
+
+
+{% block title %}
+Parking Lot
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <form action="{{ url_for('admin.lot_control', lot_id=lot.id) if lot else url_for('admin.lot_control') }}" method="POST">
+          {{ form.hidden_tag() }}
+
+          {% for field in [form.spot_id, form.user_id, form.spot_no  ,form.vehicle_number, form.parking_time, form.cost] %}
+              <div class="mb-3 row">
+                <label class="col-sm-3 col-form-label">{{ field.label.text }}</label>
+                <div class="col-sm-5">
+                  {{ field(class="form-control", readonly=true) }}
+                </div>
+              </div>
+          {% endfor %}
+
+
+        <div class="row">
+          <div class="col-sm-4">
+            <a class="btn btn-danger w-100" href="{{ url_for('admin.spot_view' , spot_id = spot.id )}}">Cancel</a>
+          </div>
+        </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+

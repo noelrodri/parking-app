@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}
+User Dash
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-light bg-success px-4">
+  <span class="navbar-brand text-white">Welcome {{ user.name|capitalize }}</span>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav me-auto ms-4">
+      <li class="nav-item"><a class="nav-link text-white" href="{{url_for('user.user_dashboard')}}">Home</a></li>
+      <li class="nav-item"><a class="nav-link text-white" href="{{url_for('parking_summary')}}">Summary</a></li>
+      <li class="nav-item"><a class="nav-link text-white" href="/logout">Logout</a></li>
+    </ul>
+    <a class="text-white ms-auto" href="{{ url_for('edit_profile')}}">Edit Profile</a>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+
+
+  <h4 class="text-center text-info">Recent Parking History</h4>
+
+  <table class="table table-bordered text-center mt-3">
+    <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Location</th>
+        <th>Vehicle No</th>
+        <th>Timestamp</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reservations %}
+      <tr>
+        <td>{{ r.id }}</td>
+        <td>{{ r.location }}</td>
+        <td>{{ r.vehicle_number }}</td>
+        <td>{{ r.parking_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>
+          {% if not r.leaving_time %}
+          <a href="{{ url_for('user.spot_release', rev_id=r.id) }}" class="btn btn-sm btn-danger">Release</a>
+          {% else %}
+          <span class="btn btn-sm btn-success disabled">Parked Out</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+  <div class="text-center my-4">
+      <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
+        <label for="searchQuery" class="fw-bold mb-0">Search Parking</label>
+        <input type="text" id="searchQuery" name="input" placeholder="Search location or pin"
+               class="form-control rounded-pill w-auto" style="max-width: 300px;">
+        <button id="lotsearchBtn" class="btn btn-dark rounded-pill px-4">Search</button>
+      </div>
+      <div id="searchResults" class="mt-3"></div>
+  </div>
+
+
+
+
+  <h4 class="text-center text-primary my-3">Parking Lots</h4>
+
+
+  <div class="container mt-4">
+    <div class = "table-responsive">   
+    <table class="table table-bordered text-center">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Address</th>
+          <th>Availability</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id = 'lotResults'>
+      </tbody>
+    </table>
+    </div>
+
+  </div>
+
+
+
+</div>
+{% endblock %}

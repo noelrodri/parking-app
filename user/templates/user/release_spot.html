@@ -1,0 +1,41 @@
+
+{% extends "base.html" %}
+
+{% block title %}
+Parking Lot
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <form action="{{ url_for ('user.spot_release'  , rev_id = reservation.id) }}" method="POST">
+          {{ form.hidden_tag() }}
+
+          {% for field in [form.spot_no, form.spot_id, form.vehicle_number, form.parking_time, form.leaving_time, form.total_cost ] %}
+              <div class="mb-3 row">
+                <label class="col-sm-4 col-form-label">{{ field.label.text }}</label>
+                <div class="col-sm-5">
+                  {{ field(class="form-control", readonly=true) }}
+                </div>
+              </div>
+          {% endfor %}
+
+
+        <div class="row">
+          <div class="col-sm-8 offset-sm-4">
+            <div class="d-flex">
+              {{ form.submit(class="btn btn-success me-2") }}
+              <a class="btn btn-danger" href="{{ url_for('user.user_dashboard') }}">Cancel</a>
+            </div>
+          </div>
+        </div>
+
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+

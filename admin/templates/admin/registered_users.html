@@ -1,0 +1,43 @@
+
+{% extends "admin_dash.html" %}
+
+
+{% block title %}
+Parking Lot
+{% endblock %}
+
+{% block content %}
+
+  <div class="container mt-4">
+      <h2 class="text-center text-primary border-bottom pb-2 mb-4">Registered Users</h2>
+  </div>
+
+  <div class="container mt-4">
+
+    <table class="table table-bordered text-center mt-3">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>E-Mail</th>
+          <th>Full Name</th>
+          <th>Address</th>
+          <th>Pin Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.name }}</td>
+          <td>{{ user.address }}</td>
+          <td>{{ user.pincode }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+
+{% endblock %}
+

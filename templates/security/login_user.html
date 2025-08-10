@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}User Login{% endblock %}
+
+
+
+
+
+{% block content %}
+
+<div class="row justify-content-center">
+    {% if login_user_form.errors %}
+      <div class="alert alert-danger">
+        {% for field_errors in login_user_form.errors.values() %}
+          {% for error in field_errors %}
+            {{ error }}<br>
+          {% endfor %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+
+    <div class="col-md-4">
+        <h2 class="text-center">User Login</h2>
+        <form method="POST" action="{{ url_for_security('login') }}">
+            {{ login_user_form.hidden_tag() }}
+            
+            <div class="mb-3">
+                <label for="email" class="form-label">Registered Email ID</label>
+                {{ login_user_form.email(class="form-control", placeholder="Enter email") }}
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-group">
+                    {{ login_user_form.password(class="form-control", id="password", placeholder="Enter password") }}
+                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">Show</button>
+                </div>
+            </div>
+
+            <div class="mb-3 form-check">
+                {{ login_user_form.remember(class="form-check-input") }}
+                <label class="form-check-label" for="remember">Remember Me</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+
+            <div class="text-center mt-3">
+                <a href="{{ url_for_security('register') }}">Create Account?</a>
+            </div>
+        </form>
+    </div>
+</div> 
+{% endblock %}
+
+
+
+
+
+
+

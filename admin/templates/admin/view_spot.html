@@ -1,0 +1,50 @@
+
+
+{% extends "base.html" %}
+
+
+{% block title %}
+    View Spot
+{% endblock %}
+
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <form action="{{ url_for('admin.spot_view', spot_id=spot.id) }}" method="POST">
+          {{ form.hidden_tag() }}
+
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label">{{ form.spot_no.label.text }}</label>
+            <div class="col-sm-2">
+              {{ form.spot_no(class="form-control", readonly=true) }}
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label class="col-sm-2 col-form-label">{{ form.status.label.text }}</label>
+            <div class="col-sm-2">
+              {% if form.status.data == 'O' %}
+                    <a href="{{ url_for('admin.spot_details',  spot_id = spot.id) }}" class="form-control">{{ form.status.data }}</a>
+              {% else %}  
+                {{ form.status(class="form-control", readonly=true) }}
+              {% endif %}
+
+            </div>
+          </div>
+
+          <div class="row mt-4">
+            <div class="col-sm-4 ">
+              {{ form.submit(class="btn btn-danger w-100", value="Delete") }}
+            </div>
+            <div class="col-sm-4">
+              <a class="btn btn-secondary w-100" href="{{ url_for('admin.dashboard') }}">Close</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

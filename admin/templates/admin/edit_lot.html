@@ -1,0 +1,96 @@
+
+{% extends "base.html" %}
+
+
+{% block title %}
+Parking Lot
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <form action="{{ url_for('admin.lot_control', lot_id=lot.id) if lot else url_for('admin.lot_control') }}" method="POST">
+          {{ form.hidden_tag() }}
+
+          <div class="mb-3 row">
+            <label for="{{ form.primename.id }}" class="col-sm-4 col-form-label">
+              {{ form.primename.label.text }}
+            </label>
+            <div class="col-sm-8">
+              {{ form.primename(class="form-control", placeholder="Enter Prime Location") }}
+              {% for error in form.primename.errors %}
+                <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+
+          <div class="mb-3 row">
+            <label for="{{ form.address.id }}" class="col-sm-4 col-form-label">
+              {{ form.address.label.text }}
+            </label>
+            <div class="col-sm-8">
+              {{ form.address(class="form-control", placeholder="Enter Address") }}
+              {% for error in form.address.errors %}
+                <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+
+          <div class="mb-3 row">
+            <label for="{{ form.pincode.id }}" class="col-sm-4 col-form-label">
+              {{ form.pincode.label.text }}
+            </label>
+            <div class="col-sm-8">
+              {{ form.pincode(class="form-control", placeholder="Enter Pincode") }}
+              {% for error in form.pincode.errors %}
+                <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+
+        <div class="mb-3 row">
+            <label for="{{ form.pincode.id }}" class="col-sm-4 col-form-label">
+              {{ form.price.label.text }}
+            </label>
+            <div class="col-sm-8">
+              {{ form.price(class="form-control", placeholder="Enter Price Per Hour") }}
+              {% for error in form.price.errors %}
+                <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+        </div>
+
+
+        <div class="mb-3 row">
+            <label for="{{ form.pincode.id }}" class="col-sm-4 col-form-label">
+              {{ form.maxspots.label.text }}
+            </label>
+            <div class="col-sm-8">
+              {{ form.maxspots(class="form-control", placeholder="Enter Max Spots") }}
+              {% for error in form.maxspots.errors %}
+                <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+            </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-8 offset-sm-4">
+            <div class="d-flex">
+              {{ form.submit(class="btn btn-success me-2") }}
+              <a class="btn btn-danger" href="{{ url_for('admin.dashboard') }}">Cancel</a>
+            </div>
+          </div>
+        </div>
+
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
