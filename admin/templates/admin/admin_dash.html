@@ -42,13 +42,13 @@ Parking Lot
                 <div>Occupied: {{ lot.occupied }}/{{ lot.maxspots }}</div>
               </div>
               <div class="mb-2">
-                <a href="{{ url_for('admin.lot_control', lot_id = lot.id ) }}" class="text-primary">Edit</a>   
+                <a href="{{ url_for('admin.edit_lot', lot_id = lot.id ) }}" class="text-primary">Edit</a>   
                 <a href="{{ url_for('admin.lot_delete' , lot_id = lot.id) }}" class="text-danger"
                    onclick="return confirm('Are you sure you want to delete this lot?')">Delete</a>
               </div>
               <div class="scrollable-spot-list">
                 <div class="d-flex flex-wrap">
-                  {% for spot in lot.spots %}
+                  {% for spot in spots[lot] %}
                     <a  href="{{ url_for('admin.spot_view', spot_id=spot.id) }}"  class="btn spot-btn m-1 {{ 'btn-success' if spot.status == 'A' else 'btn-danger' }}" title="Spot #{{ spot.spot_number }}">{{ spot.status }}</a>
                   {% endfor %}
                 </div>
@@ -59,7 +59,7 @@ Parking Lot
         </div>
 
         <div class="text-center mt-4">
-              <a href="{{ url_for('admin.lot_control') }}" class="btn btn-warning btn-lg">+ Add Lot</a>
+              <a href="{{ url_for('admin.edit_lot') }}" class="btn btn-warning btn-lg">+ Add Lot</a>
         </div>
 </div>
 

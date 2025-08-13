@@ -175,7 +175,7 @@ def parking_summary():
     else:
         reservations = ReservedSpots.query.filter(ReservedSpots.user_id == current_user.id).all()
 
-        spot_ids = [f"{r.primename_at_booking.split(' ')[0]}" for r in reservations]
+        spot_ids = [f"{r.spot.id}-{r.spot.lot.primename.split(' ')[0]}" for r in reservations]
         spot_usage = Counter(spot_ids)
 
         labels = list(spot_usage.keys())

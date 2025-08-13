@@ -81,7 +81,7 @@ def book_spot(lot_id):
         form = BookSpotFrom()
 
         if form.validate_on_submit():
-            spot = ParkingSpot.query.get_or_404(form.id.data.strip())
+            spot = ParkingSpot.query.filter_by(id=form.id.data.strip(), active=True).first_or_404()
 
             if spot.status == 'A':
                 _vehicle_number = form.vehicle_number.data.strip().upper()

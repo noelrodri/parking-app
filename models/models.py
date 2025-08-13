@@ -51,6 +51,7 @@ class ParkingLots(db.Model):
     address = db.Column(db.String(225) , nullable = False)
     pincode = db.Column(db.String(15) , nullable =False)
     maxspots = db.Column(db.Integer , nullable = False)
+    active = db.Column(db.Boolean , default = True , nullable = False)
     spots = db.relationship('ParkingSpot', backref='lot', lazy=True)
 
 
@@ -62,7 +63,7 @@ class ParkingSpot(db.Model):
     spot_no = db.Column(db.Integer , nullable = False)
     status = db.Column(db.String(1), nullable=False)
     reservations = db.relationship('ReservedSpots', backref='spot', lazy=True)
-
+    active = db.Column(db.Boolean , default = True ,nullable = False)
     __table_args__ = (
         CheckConstraint("status IN ('A', 'O')", name="check_status_valid"),
     )
@@ -74,8 +75,6 @@ class ReservedSpots(db.Model):
     id = db.Column(db.Integer , primary_key = True)
     spot_id = db.Column(db.Integer , ForeignKey('parking_spot.id') , nullable = True , index = True)
     user_id = db.Column(db.Integer , ForeignKey('user.id') , nullable = True , index = True)
-    location_at_booking = db.Column(db.String(225), nullable = False)
-    primename_at_booking = db.Column(db.String(225) , nullable = False)
     vehicle_number = db.Column(db.String(15) , nullable = False )
     parking_time = db.Column(db.DateTime(timezone=True) , nullable = False , server_default=func.now())
     leaving_time = db.Column(db.DateTime(timezone=True) )
