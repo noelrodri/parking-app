@@ -1,11 +1,8 @@
-import os , uuid
-from flask import Flask, redirect, flash, url_for
-from flask_sqlalchemy import SQLAlchemy
-from flask_security import Security, SQLAlchemyUserDatastore, auth_required, roles_required, current_user
+import os
+from flask import Flask, redirect, flash, url_for, render_template
+from flask_security import Security, SQLAlchemyUserDatastore, auth_required, current_user
 from flask_migrate import Migrate
 from flask_security.utils import hash_password
-from flask import request, jsonify, render_template
-from flask_security.forms import LoginForm 
 from models.models import db, User, Role, ParkingLots, ParkingSpot, ReservedSpots
 from sqlalchemy.exc import SQLAlchemyError
 from user.user import user_bp
@@ -116,7 +113,7 @@ def edit_profile():
 
         try:
             db.session.commit()
-            flash("Details Updaed Successfully" , 'success')
+            flash("Details Updated Successfully" , 'success')
 
             if current_user.has_role('admin'):
                 return redirect(url_for('admin.dashboard'))
@@ -124,10 +121,10 @@ def edit_profile():
             else:
                 return redirect(url_for('user.user_dashboard'))
 
-        except SQLAlchemyError as e:
-            print(e)
+        except SQLAlchemyError:
+            app.logger.exception("Failed to update profile")
             db.session.rollback()
-            flash("Error Occured Please Try Again", 'danger')
+            flash("Error Occurred Please Try Again", 'danger')
 
     return render_template('edit_profile.html' , form = form)
 

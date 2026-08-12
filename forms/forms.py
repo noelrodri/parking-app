@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import (StringField, IntegerField, DecimalField, SubmitField, TextAreaField , SelectField, SubmitField , DateField , 
-DateTimeField, DateTimeField, EmailField)
+from wtforms import (StringField, IntegerField, DecimalField, SubmitField, TextAreaField,
+SelectField, DateTimeField, EmailField)
 from wtforms.validators import DataRequired, Length, NumberRange,Regexp , Email
 from flask_security.forms import RegisterForm
 

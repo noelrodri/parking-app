@@ -1,17 +1,10 @@
-import os , uuid
-from flask import Flask, redirect, flash, url_for
-from flask_sqlalchemy import SQLAlchemy
-from flask_security import Security, SQLAlchemyUserDatastore, auth_required, roles_required, current_user
-from flask_security.utils import hash_password
-from flask import request, jsonify, render_template
+from flask import Blueprint, redirect, flash, url_for, render_template, current_app
+from flask_security import roles_required
 from models.models import db, User, Role, ParkingLots, ParkingSpot, ReservedSpots
-from wtforms import StringField, TextAreaField , PasswordField 
-from wtforms.validators import DataRequired, Email, Length, InputRequired 
 from sqlalchemy.exc import SQLAlchemyError
-from forms.forms import ParkingLotForm , ExtendedForm, DeleteForm , ReleaseSpotForm , BookSpotFrom, ViewSpotForm, LotSearchForm
-from datetime import datetime 
+from forms.forms import ParkingLotForm, DeleteForm, ViewSpotForm, LotSearchForm
+from datetime import datetime
 from pytz import timezone, UTC
-from flask import Blueprint
 from decimal import Decimal
 from sqlalchemy import func, case, and_
 
@@ -75,7 +68,8 @@ def spot_view(spot_id):
                 flash("Spot Deleted", 'success')
                 return redirect(url_for('admin.dashboard'))
 
-            except SQLAlchemyError as e:
+            except SQLAlchemyError:
+                current_app.logger.exception("Failed to delete spot")
                 db.session.rollback()
                 flash("Did not delete Spot", 'danger')
                 return render_template ('view_spot.html' , form = form, spot = spot )
@@ -147,8 +141,8 @@ def lot_delete(lot_id = None):
         db.session.commit()
         flash("Parking lot deleted successfully.", "success")
 
-    except SQLAlchemyError as e:
-        print(e)
+    except SQLAlchemyError:
+        current_app.logger.exception("Failed to delete parking lot")
         db.session.rollback()
         flash("An error occurred while deleting the parking lot.", "danger")
 
@@ -249,9 +243,9 @@ def edit_lot(lot_id = None):
                 flash('Parking lot Updated', 'success')
                 return redirect(url_for('admin.dashboard'))
 
-            except SQLAlchemyError as e:
+            except SQLAlchemyError:
+                current_app.logger.exception("Failed to update parking lot")
                 db.session.rollback()
-                print(e)
                 flash('An error occurred while updating the lot', 'danger')
 
 
@@ -265,7 +259,7 @@ def edit_lot(lot_id = None):
 
         if ParkingLots.query.filter_by(address= address).first():
             
-            flash ("A parking Lot at this addres already exits", "danger")
+            flash ("A parking Lot at this address already exists", "danger")
             return render_template('edit_lot.html' , form = form , data = _data)
 
         else:
@@ -290,12 +284,13 @@ def edit_lot(lot_id = None):
                     db.session.add(spot)
 
                 db.session.commit()
-                flash(f"Created new lot and Spots", "success")
+                flash("Created new lot and Spots", "success")
                 return redirect(url_for('admin.dashboard'))
 
-            except SQLAlchemyError as e:
+            except SQLAlchemyError:
+                current_app.logger.exception("Failed to create parking lot")
                 db.session.rollback()
-                flash(f"Did not create new lot", "danger")
+                flash("Did not create new lot", "danger")
                 return render_template("edit_lot.html", form=form , data = _data)
 
             return redirect(url_for('admin.dashboard'))

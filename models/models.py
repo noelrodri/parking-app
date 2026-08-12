@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import UserMixin, RoleMixin
 import uuid
-from datetime import datetime
 from sqlalchemy import JSON, func, ForeignKey, CheckConstraint
 
 

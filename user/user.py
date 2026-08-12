@@ -1,16 +1,11 @@
-import os , uuid
-from flask import Flask, redirect, flash, url_for
-from flask_sqlalchemy import SQLAlchemy
-from flask_security import Security, SQLAlchemyUserDatastore, auth_required, roles_required, current_user
-from flask_security.utils import hash_password
-from flask import request, jsonify, render_template
-from models.models import db, User, Role, ParkingLots, ParkingSpot, ReservedSpots
+from flask import Blueprint, redirect, flash, url_for, render_template, request, jsonify, current_app
+from flask_security import auth_required, current_user
+from models.models import db, ParkingLots, ParkingSpot, ReservedSpots
 from sqlalchemy.exc import SQLAlchemyError
-from forms.forms import ParkingLotForm , ExtendedForm, DeleteForm , ReleaseSpotForm , BookSpotFrom, ViewSpotForm, LotSearchForm
-from datetime import datetime 
+from forms.forms import ReleaseSpotForm, BookSpotFrom
+from datetime import datetime
 from pytz import timezone, UTC
-from flask import Blueprint
-import re 
+import re
 from decimal import Decimal
 from sqlalchemy import func
 
@@ -47,9 +42,9 @@ def spot_release(rev_id):
             db.session.commit()
 
 
-        except SQLAlchemyError as e: 
+        except SQLAlchemyError:
+            current_app.logger.exception("Failed to release spot")
             db.session.rollback()
-            print(e)
             flash('Error Spot not released' , 'danger')
             return redirect(url_for('user.spot_release'))
 
@@ -113,16 +108,16 @@ def book_spot(lot_id):
                     flash('Spot successfully reserved!', 'success')
                     return redirect(url_for('user.user_dashboard'))
 
-                except SQLAlchemyError as e:
-                    print(e)
+                except SQLAlchemyError:
+                    current_app.logger.exception("Failed to reserve spot")
                     db.session.rollback()
                     flash('Spot not Reserved Due to Error', 'danger')
 
             else:
-                flash('Spot not available choose another Spot ', 'danger')
+                flash('Spot not available choose another Spot', 'danger')
                 return redirect(url_for('user.user_dashboard'))
 
-            flash('Spot Scucessfully Booked' , 'success')
+            flash('Spot Successfully Booked' , 'success')
             return redirect(url_for('user.user_dashboard'))
 
 
@@ -133,8 +128,6 @@ def book_spot(lot_id):
 @user_bp.route('/dashboard' , methods = ['GET' , 'POST'])
 @auth_required()
 def user_dashboard():
-    data = {}
-
     parking_lots = ParkingLots.query.all()
 
     for lot in parking_lots:
