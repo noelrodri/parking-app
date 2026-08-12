@@ -12,7 +12,7 @@ from user.user import user_bp
 from admin.admin import admin_bp
 from forms.forms import ExtendedForm, EditProfileForm
 from collections import Counter
-from sqlalchemy import func
+from sqlalchemy import func, inspect
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -34,7 +34,7 @@ app.config['SECURITY_SEND_REGISTER_EMAIL'] = False
 app.config['SECURITY_LOGIN_URL'] = '/login'
 app.config['SECURITY_LOGOUT_URL'] = '/logout'
 
-debug_mode = os.getenv('FLASK_DEBUG', '1') == '1'
+debug_mode = os.getenv('FLASK_DEBUG', '0') == '1'
 
 
 db.init_app(app)
@@ -48,8 +48,6 @@ security = Security(app, user_datastore)
 #create users 
 with app.app_context():
     def create_users():
-        db.create_all()  #create all tables 
-
         if not user_datastore.find_role("admin"):
             user_datastore.create_role(
                 name="admin", 
@@ -77,9 +75,10 @@ with app.app_context():
                 pincode = "400000"
             )
                 
-        db.session.commit() 
-    
-    create_users()
+        db.session.commit()
+
+    if inspect(db.engine).has_table('role'):
+        create_users()
 
 
 

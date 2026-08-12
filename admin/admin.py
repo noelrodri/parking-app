@@ -13,7 +13,7 @@ from datetime import datetime
 from pytz import timezone, UTC
 from flask import Blueprint
 from decimal import Decimal
-from sqlalchemy import func, case
+from sqlalchemy import func, case, and_
 
 
 ist = timezone('Asia/Kolkata')
@@ -31,9 +31,9 @@ def dashboard():
                 case((ParkingSpot.status == 'O', 1))
             ).label('occupied')
         )
-        .join(ParkingSpot, ParkingLots.id == ParkingSpot.lot_id)
+        .outerjoin(ParkingSpot, and_(ParkingLots.id == ParkingSpot.lot_id,
+                                     ParkingSpot.active == True))
         .filter(ParkingLots.active == True)   # only active lots
-        .filter(ParkingSpot.active == True)   # only active spots for count
         .group_by(ParkingLots.id)
         .all()
     )
@@ -66,7 +66,7 @@ def spot_view(spot_id):
         if spot.status == 'A':
             try:
                 lot = ParkingLots.query.get(spot.lot_id)
-                db.session.delete(spot)
+                spot.active = False
 
                 if lot and lot.maxspots > 0:
                     lot.maxspots -= 1
@@ -94,7 +94,6 @@ def spot_view(spot_id):
 def spot_details(spot_id):
 
     spot = ParkingSpot.query.filter_by(id=spot_id, active=True).first_or_404()
-    reservation = ReservedSpots.query.filter_by(spot_id=spot.id).first()
 
     reservation = (ReservedSpots.query.filter(ReservedSpots.spot_id == spot_id,ReservedSpots.spot.has(active=True))
     .first_or_404())
@@ -132,18 +131,19 @@ def user_list():
 @roles_required('admin')
 def lot_delete(lot_id = None):
     
-    occupied_spot = ParkingSpot.query.filter_by(lot_id=lot_id, status='O', active=True).first_or_404()
-    lot = ParkingLots.query.get(lot_id)
+    lot = ParkingLots.query.filter_by(id=lot_id, active=True).first_or_404()
+
+    occupied_spot = ParkingSpot.query.filter_by(lot_id=lot_id, status='O', active=True).first()
 
     if occupied_spot:
         flash("Cannot delete lot with occupied spots.", "danger")
         return redirect(url_for('admin.dashboard'))
 
     try:
-        for spot in ParkingSpot.query.filter_by(lot_id = lot_id.id , active = True).all():
-            spot.avtive = False 
+        for spot in ParkingSpot.query.filter_by(lot_id = lot.id , active = True).all():
+            spot.active = False
 
-        lot.active = False 
+        lot.active = False
         db.session.commit()
         flash("Parking lot deleted successfully.", "success")
 
@@ -196,7 +196,7 @@ def lot_search():
 def edit_lot(lot_id = None):
 
     if lot_id:
-        lot = ParkingSpot.query.filter_by(id= lot_id, active=True).first_or_404()
+        lot = ParkingLots.query.filter_by(id= lot_id, active=True).first_or_404()
         _data = {"title":"Edit Parking Lot", "type": "Edit" }
 
         form = ParkingLotForm(obj = lot)

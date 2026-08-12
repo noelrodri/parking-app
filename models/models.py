@@ -2,8 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_security import UserMixin, RoleMixin
 import uuid
 from datetime import datetime
-from sqlalchemy.dialects.postgresql import JSON
-from sqlalchemy import func, ForeignKey, CheckConstraint
+from sqlalchemy import JSON, func, ForeignKey, CheckConstraint
 
 
 db = SQLAlchemy()
