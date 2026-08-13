@@ -67,7 +67,7 @@ if (usrdashlot) {
               const bookCell = document.createElement('td');
               if (lot.availability > 0)
               { 
-                bookCell.innerHTML = `<a href="/user/spot/book${lot.id}" class="btn btn-primary btn-sm">Book</a>`;
+                bookCell.innerHTML = `<a href="/user/spot/book/${lot.id}" class="btn btn-primary btn-sm">Book</a>`;
                 row.appendChild(bookCell);
               }
               else {

@@ -15,7 +15,7 @@ user_bp = Blueprint('user', __name__, url_prefix='/user' , template_folder = 'te
 numberplte_pat = r'^(?:[A-Z]{2}\d{2}[A-Z]{1,2}\d{1,4}|\d{2}BH\d{4}[A-Z]{2})$'
 
 
-@user_bp.route('/spot/release<int:rev_id>' , methods = ['GET' , 'POST'])  
+@user_bp.route('/spot/release/<int:rev_id>' , methods = ['GET' , 'POST'])
 @auth_required()
 def spot_release(rev_id):
     reservation = ReservedSpots.query.get_or_404(rev_id)    
@@ -54,7 +54,7 @@ def spot_release(rev_id):
 
 
 
-@user_bp.route('/spot/book<int:lot_id>' , methods = ['GET' , 'POST'])
+@user_bp.route('/spot/book/<int:lot_id>' , methods = ['GET' , 'POST'])
 @auth_required()
 def book_spot(lot_id):
     lot = ParkingLots.query.get_or_404(lot_id)

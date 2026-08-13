@@ -48,7 +48,7 @@ def dashboard():
 
 
 
-@admin_bp.route('/spot/view<int:spot_id>', methods = ['GET' , 'POST'] )
+@admin_bp.route('/spot/view/<int:spot_id>', methods = ['GET' , 'POST'] )
 @roles_required('admin')
 def spot_view(spot_id):
     spot = ParkingSpot.query.filter_by(id= spot_id, active=True).first_or_404()
@@ -83,7 +83,7 @@ def spot_view(spot_id):
 
 
 
-@admin_bp.route('/spot/details<int:spot_id>' , methods = [ 'GET'])
+@admin_bp.route('/spot/details/<int:spot_id>' , methods = [ 'GET'])
 @roles_required('admin')
 def spot_details(spot_id):
 
